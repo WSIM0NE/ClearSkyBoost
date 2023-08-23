@@ -97,19 +97,23 @@ class ClearSkyBoostAlgorithm(QgsProcessingAlgorithm):
         ))
         self.addParameter(QgsProcessingParameterEnum(
                 self.RESOLUTION,
-                'Select image resolution 10m or 20m . Higher resolution may take longer to process.',
+                'Select image resolution, 10m for more detail or 20m for faster processing.',
                 options=['10','20'],
                 defaultValue= '20'
         ))
-        self.addParameter(QgsProcessingParameterNumber(
+        
+        cloudparam=QgsProcessingParameterNumber(
             self.MIN_CLOUD_SIZE,
             'Select the minimum cloud size (in pixels) to retain',
-            QgsProcessingParameterNumber.Double,
-            defaultValue=0.2,
-            minValue=0.1,
-            maxValue=0.5,
-            optional=True
-        ))
+            type=QgsProcessingParameterNumber.Double,
+            defaultValue=2,
+            minValue=1,
+            maxValue=5,
+            optional=True)
+        cloudparam.setMetadata({'widget_wrapper':
+                           {'decimals':0}})
+        self.addParameter(cloudparam)
+
         self.addParameter(QgsProcessingParameterBoolean(
             self.KEEP_INTERMEDIATE,
             'Keep Intermediate Files',
@@ -136,7 +140,7 @@ class ClearSkyBoostAlgorithm(QgsProcessingAlgorithm):
         
         
         resolution = self.parameterAsString(parameters, self.RESOLUTION, context)
-        min_cloud_size = self.parameterAsDouble(parameters, self.MIN_CLOUD_SIZE, context)
+        min_cloud_size = self.parameterAsInt(parameters, self.MIN_CLOUD_SIZE, context)
         keep_intermediate = self.parameterAsBool(parameters, self.KEEP_INTERMEDIATE, context)
         buffer_distance = self.parameterAsDouble(parameters, self.BUFFER_DISTANCE, context)
         if buffer_distance is None:
@@ -162,7 +166,7 @@ class ClearSkyBoostAlgorithm(QgsProcessingAlgorithm):
                      "--mincloudsize", str(min_cloud_size),
                      "--cloudbufferdistance", str(buffer_distance),
                      "--shadowbufferdistance", str(buffer_distance)
-                     ])
+                     ], feedback=feedback)
         return {}
 
     def name(self):
