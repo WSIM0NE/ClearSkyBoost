@@ -24,10 +24,7 @@
 
 __author__ = 'MCC & UMaine'
 __date__ = '2023-07-10'
-__copyright__ = '(C) 2023 by MCC & UMaine'
-
-# This will get replaced with a git SHA1 when you do a git archive
-
+__copyright__ = '(C) 2023 by MCC & UMaine
 __revision__ = '$Format:%H$'
 
 from qgis.core import QgsProcessingProvider
@@ -54,9 +51,7 @@ class ClearSkyBoostProvider(QgsProcessingProvider):
         Loads all algorithms belonging to this provider.
         """
         self.addAlgorithm(ClearSkyBoostAlgorithm())
-        # add additional algorithms here
-        # self.addAlgorithm(MyOtherAlgorithm())
-
+   
     def id(self):
         """
         Returns the unique provider id, used for identifying the provider. This
